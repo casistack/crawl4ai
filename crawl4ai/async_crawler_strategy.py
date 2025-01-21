@@ -1475,8 +1475,13 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
 
         except Exception as e:
             raise e
+        
+        finally:
+            # If no session_id is given we should close the page
+            if not config.session_id:
+                await page.close()
 
-    async def _handle_full_page_scan(self, page: Page, scroll_delay: float):
+    async def _handle_full_page_scan(self, page: Page, scroll_delay: float = 0.1):
         """
         Helper method to handle full page scanning. 
         
@@ -1500,7 +1505,7 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
             current_position = viewport_height
 
             # await page.evaluate(f"window.scrollTo(0, {current_position})")
-            await self.safe_scroll(page, 0, current_position)
+            await self.safe_scroll(page, 0, current_position, delay=scroll_delay)
             # await self.csp_scroll_to(page, 0, current_position)
             # await asyncio.sleep(scroll_delay)
 
@@ -1510,7 +1515,7 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
             
             while current_position < total_height:
                 current_position = min(current_position + viewport_height, total_height)
-                await self.safe_scroll(page, 0, current_position)
+                await self.safe_scroll(page, 0, current_position, delay=scroll_delay)
                 # await page.evaluate(f"window.scrollTo(0, {current_position})")
                 # await asyncio.sleep(scroll_delay)
 
@@ -1639,11 +1644,9 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
         Returns:
             str: The base64-encoded screenshot data
         """
-        dimensions = await self.get_page_dimensions(page)
-        page_height = dimensions['height']        
-        if page_height < kwargs.get(
-            "screenshot_height_threshold", SCREENSHOT_HEIGHT_TRESHOLD
-        ):
+        need_scroll = await self.page_need_scroll(page)
+        
+        if not need_scroll:
             # Page is short enough, just take a screenshot
             return await self.take_screenshot_naive(page)
         else:
@@ -2066,7 +2069,7 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
             }
         """)       
         
-    async def safe_scroll(self, page: Page, x: int, y: int):
+    async def safe_scroll(self, page: Page, x: int, y: int, delay: float = 0.1):
         """
         Safely scroll the page with rendering time.
         
@@ -2077,7 +2080,7 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
         """
         result = await self.csp_scroll_to(page, x, y)
         if result['success']:
-            await page.wait_for_timeout(100)  # Allow for rendering
+            await page.wait_for_timeout(delay * 1000)
         return result
             
     async def csp_scroll_to(self, page: Page, x: int, y: int) -> Dict[str, Any]:
@@ -2159,3 +2162,30 @@ class AsyncPlaywrightCrawlerStrategy(AsyncCrawlerStrategy):
                 return {width: scrollWidth, height: scrollHeight};
             }
         """)
+    
+    async def page_need_scroll(self, page: Page) -> bool:
+        """
+        Determine whether the page need to scroll
+        
+        Args:
+            page: Playwright page object
+            
+        Returns:
+            bool: True if page needs scrolling
+        """
+        try:
+            need_scroll = await page.evaluate("""
+            () => {
+                const scrollHeight = document.documentElement.scrollHeight;
+                const viewportHeight = window.innerHeight;
+                return scrollHeight > viewportHeight;
+            }
+            """)
+            return need_scroll
+        except Exception as e:
+            self.logger.warning(
+                message="Failed to check scroll need: {error}. Defaulting to True for safety.",
+                tag="SCROLL",
+                params={"error": str(e)}
+            )
+            return True  # Default to scrolling if check fails

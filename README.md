@@ -15,6 +15,7 @@
 [![License](https://img.shields.io/github/license/unclecode/crawl4ai)](https://github.com/unclecode/crawl4ai/blob/main/LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
 </div>
 
@@ -22,7 +23,7 @@ Crawl4AI is the #1 trending GitHub repository, actively maintained by a vibrant 
 
 [✨ Check out latest update v0.4.24x](#-recent-updates)
 
-🎉 **Version 0.4.24x is out!** Major improvements in extraction strategies with enhanced JSON handling, SSL security, and Amazon product extraction. Plus, a completely revamped content filtering system! [Read the release notes →](https://crawl4ai.com/mkdocs/blog)
+🎉 **Version 0.4.24x is out!** Major improvements in extraction strategies with enhanced JSON handling, SSL security, and Amazon product extraction. Plus, a completely revamped content filtering system! [Read the release notes →](https://docs.crawl4ai.com/blog)
 
 ## 🧐 Why Crawl4AI?
 
@@ -148,7 +149,7 @@ if __name__ == "__main__":
 
 ✨ Play around with this [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1SgRPrByQLzjRfwoRNq1wSGE9nYY_EE8C?usp=sharing)
 
-✨ Visit our [Documentation Website](https://crawl4ai.com/mkdocs/)
+✨ Visit our [Documentation Website](https://docs.crawl4ai.com/)
 
 ## Installation 🛠️
 
@@ -264,7 +265,7 @@ task_id = response.json()["task_id"]
 result = requests.get(f"http://localhost:11235/task/{task_id}")
 ```
 
-For more examples, see our [Docker Examples](https://github.com/unclecode/crawl4ai/blob/main/docs/examples/docker_example.py). For advanced configuration, environment variables, and usage examples, see our [Docker Deployment Guide](https://crawl4ai.com/mkdocs/basic/docker-deployment/).
+For more examples, see our [Docker Examples](https://github.com/unclecode/crawl4ai/blob/main/docs/examples/docker_example.py). For advanced configuration, environment variables, and usage examples, see our [Docker Deployment Guide](https://docs.crawl4ai.com/basic/docker-deployment/).
 
 </details>
 
@@ -431,7 +432,7 @@ if __name__ == "__main__":
 </details>
 
 <details>
-<summary>🤖 <strong>Using You own Browswer with Custome User Profile</strong></summary>
+<summary>🤖 <strong>Using You own Browser with Custom User Profile</strong></summary>
 
 ```python
 import os, sys
@@ -486,7 +487,7 @@ Read the full details of this release in our [0.4.24 Release Notes](https://gith
 
 > 🚨 **Documentation Update Alert**: We're undertaking a major documentation overhaul next week to reflect recent updates and improvements. Stay tuned for a more comprehensive and up-to-date guide!
 
-For current documentation, including installation instructions, advanced features, and API reference, visit our [Documentation Website](https://crawl4ai.com/mkdocs/).
+For current documentation, including installation instructions, advanced features, and API reference, visit our [Documentation Website](https://docs.crawl4ai.com/).
 
 To check our development plans and upcoming features, visit our [Roadmap](https://github.com/unclecode/crawl4ai/blob/main/ROADMAP.md).
 
@@ -510,7 +511,7 @@ To check our development plans and upcoming features, visit our [Roadmap](https:
 
 ## 🤝 Contributing 
 
-We welcome contributions from the open-source community. Check out our [contribution guidelines](https://github.com/unclecode/crawl4ai/blob/main/CONTRIBUTING.md) for more information.
+We welcome contributions from the open-source community. Check out our [contribution guidelines](https://github.com/unclecode/crawl4ai/blob/main/CONTRIBUTORS.md) for more information.
 
 ## 📄 License 
 

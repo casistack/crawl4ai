@@ -225,3 +225,9 @@ tree.md
 .scripts
 .local
 .do
+/plans
+plans/
+
+# Codeium
+.codeiumignore
+todo/
