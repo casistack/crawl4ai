@@ -6,6 +6,9 @@ load_dotenv()  # Load environment variables from .env file
 # Default provider, ONLY used when the extraction strategy is LLMExtractionStrategy
 DEFAULT_PROVIDER = "openai/gpt-4o-mini"
 MODEL_REPO_BRANCH = "new-release-0.0.2"
+# Default API base URLs, can be overridden by environment variables
+DEFAULT_API_BASE = os.getenv("OPENAI_API_BASE")
+
 # Provider-model dictionary, ONLY used when the extraction strategy is LLMExtractionStrategy
 PROVIDER_MODELS = {
     "ollama/llama3": "no-token-needed",  # Any model from Ollama no need for API token

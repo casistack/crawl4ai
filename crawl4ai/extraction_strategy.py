@@ -543,8 +543,9 @@ class LLMExtractionStrategy(ExtractionStrategy):
         self.overlap_rate = kwargs.get("overlap_rate", OVERLAP_RATE)
         self.word_token_rate = kwargs.get("word_token_rate", WORD_TOKEN_RATE)
         self.apply_chunking = kwargs.get("apply_chunking", True)
-        self.base_url = kwargs.get("base_url", None)
-        self.api_base = kwargs.get("api_base", kwargs.get("base_url", None))
+        # Use kwargs base_url/api_base if provided, otherwise fallback to environment variable
+        self.base_url = kwargs.get("base_url", DEFAULT_API_BASE)
+        self.api_base = kwargs.get("api_base", kwargs.get("base_url", DEFAULT_API_BASE))
         self.extra_args = kwargs.get("extra_args", {})
         if not self.apply_chunking:
             self.chunk_token_threshold = 1e9
