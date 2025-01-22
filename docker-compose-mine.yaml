@@ -3,7 +3,7 @@ services:
   crawl4ai:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-mine
       args:
         - PYTHON_VERSION=3.10
         - INSTALL_TYPE=${INSTALL_TYPE:-basic}
