@@ -85,16 +85,15 @@ async def demo_memory_dispatcher():
             )
             
             print("\n🚀 Starting batch crawl...")
-            results = await dispatcher.run_urls(
+            results = await crawler.arun_many(
                 urls=urls,
-                crawler=crawler,
                 config=crawler_config,
+                dispatcher=dispatcher
             )
             print(f"\n✅ Completed {len(results)} URLs successfully")
             
     except Exception as e:
         print(f"\n❌ Error in memory dispatcher demo: {str(e)}")
-
 
 async def demo_streaming_support():
     """
@@ -115,16 +114,17 @@ async def demo_streaming_support():
         dispatcher = MemoryAdaptiveDispatcher(max_session_permit=3, check_interval=0.5)
 
         print("Starting streaming crawl...")
-        async for result in dispatcher.run_urls_stream(
-            urls=urls, crawler=crawler, config=crawler_config
+        async for result in await crawler.arun_many(
+            urls=urls,
+            config=crawler_config,
+            dispatcher=dispatcher
         ):
             # Process each result as it arrives
             print(
-                f"Received result for {result.url} - Success: {result.result.success}"
+                f"Received result for {result.url} - Success: {result.success}"
             )
-            if result.result.success:
-                print(f"Content length: {len(result.result.markdown)}")
-
+            if result.success:
+                print(f"Content length: {len(result.markdown)}")
 
 async def demo_content_scraping():
     """
@@ -138,14 +138,16 @@ async def demo_content_scraping():
     url = "https://example.com/article"
 
     # Configure with the new LXML strategy
-    config = CrawlerRunConfig(scraping_strategy=LXMLWebScrapingStrategy(), verbose=True)
+    config = CrawlerRunConfig(
+        scraping_strategy=LXMLWebScrapingStrategy(), 
+        verbose=True
+    )
 
     print("Scraping content with LXML strategy...")
     async with crawler:
         result = await crawler.arun(url, config=config)
         if result.success:
             print("Successfully scraped content using LXML strategy")
-
 
 async def demo_llm_markdown():
     """
@@ -197,7 +199,6 @@ async def demo_llm_markdown():
             print(result.markdown_v2.fit_markdown[:500])
             print("Successfully generated LLM-filtered markdown")
 
-
 async def demo_robots_compliance():
     """
     5. Robots.txt Compliance Demo
@@ -220,8 +221,6 @@ async def demo_robots_compliance():
                 print(f"Access blocked by robots.txt: {result.url}")
             elif result.success:
                 print(f"Successfully crawled: {result.url}")
-
-
 
 async def demo_json_schema_generation():
     """
@@ -276,7 +275,6 @@ async def demo_json_schema_generation():
             print(json.dumps(result.extracted_content, indent=2) if result.extracted_content else None)
             print("Successfully used generated schema for crawling")
 
-
 async def demo_proxy_rotation():
     """
     8. Proxy Rotation Demo
@@ -299,8 +297,7 @@ async def demo_proxy_rotation():
             }
         except Exception as e:
             print(f"Error loading proxy: {e}")
-            return None
-    
+            return None    
     
     # Create 10 test requests to httpbin
     urls = ["https://httpbin.org/ip"] * 2
@@ -316,7 +313,7 @@ async def demo_proxy_rotation():
                 continue
                 
             # Create new config with proxy
-            current_config = run_config.clone(proxy_config=proxy)
+            current_config = run_config.clone(proxy_config=proxy, user_agent="")
             result = await crawler.arun(url=url, config=current_config)
             
             if result.success:
